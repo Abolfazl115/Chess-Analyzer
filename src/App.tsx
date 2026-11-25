@@ -324,18 +324,19 @@ function parseGame(pgn: string): Game {
   let fen = game.rootFen;
   let parent: string | null = null;
 
-  let last: {
+  type LastMove = {
     beforeFen: string;
     beforeParent: string | null;
     nodeId: string;
-  } | null = null;
-
+  };
+  
+  let last: LastMove | null = null;
+  
   const stack: Array<{
     fen: string;
     parent: string | null;
-    last: typeof last;
+    last: LastMove | null;
   }> = [];
-
   const tokens =
     body.match(/\{[^}]*\}|;[^\r\n]*|\(|\)|\$[0-9]+|[^\s(){}]+/g) || [];
 
@@ -517,7 +518,7 @@ function getLinePreview(
   let isFirstMove = true;
 
   while (currentId) {
-    const node = game.nodes[currentId];
+    const node: Game["nodes"][string] | undefined = game.nodes[currentId];
     if (!node) break;
 
     moves.push(
